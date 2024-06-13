@@ -1,2 +1,2 @@
-# cull
-cull the iterator
+# xtractiter
+Extracting iterators from a collection.
