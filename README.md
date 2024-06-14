@@ -1,2 +1,3 @@
-# xtractiter
-Extracting iterators from a collection.
+# xtract
+
+Extract from collection and build iterators.
