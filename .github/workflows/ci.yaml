@@ -31,6 +31,10 @@ jobs:
           cache: true
           cache-dependency-path: go.sum
 
+      - name: Setup Go Env
+        run: |
+          go env -w GOEXPERIMENT=rangefunc
+
       - name: Setup reviewdog
         uses: reviewdog/action-setup@v1
         with:
