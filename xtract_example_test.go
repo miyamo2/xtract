@@ -47,3 +47,11 @@ func ExampleMapExtractor_ByKey() {
 	}
 	// Output: iterator
 }
+
+func ExampleMapExtractor_ByKeyAndValue() {
+	m := map[string]string{"language": "gopher", "design pattern": "iterator", "implementation": "range over func"}
+	for v := range xtract.FromMap(m).ByKeyAndValue(func(k, v string) bool { return strings.Contains(k, "e") && len(v) < 8 }) {
+		fmt.Println(v)
+	}
+	// Output: gopher
+}
