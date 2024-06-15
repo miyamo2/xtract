@@ -25,10 +25,8 @@ type SliceExtractor[T any] struct {
 func (x *SliceExtractor[T]) ByValue(condition func(T) bool) func(yield func(T) bool) {
 	return func(yield func(T) bool) {
 		for _, v := range x.s {
-			if condition(v) {
-				if !yield(v) {
-					break
-				}
+			if condition(v) && !yield(v) {
+				return
 			}
 		}
 	}
@@ -38,10 +36,8 @@ func (x *SliceExtractor[T]) ByValue(condition func(T) bool) func(yield func(T) b
 func (x *SliceExtractor[T]) ByKey(condition func(int) bool) func(yield func(T) bool) {
 	return func(yield func(T) bool) {
 		for i, v := range x.s {
-			if condition(i) {
-				if !yield(v) {
-					break
-				}
+			if condition(i) && !yield(v) {
+				return
 			}
 		}
 	}
@@ -51,10 +47,8 @@ func (x *SliceExtractor[T]) ByKey(condition func(int) bool) func(yield func(T) b
 func (x *SliceExtractor[T]) ByKeyAndValue(condition func(int, T) bool) func(yield func(T) bool) {
 	return func(yield func(T) bool) {
 		for i, v := range x.s {
-			if condition(i, v) {
-				if !yield(v) {
-					break
-				}
+			if condition(i, v) && !yield(v) {
+				return
 			}
 		}
 	}
@@ -76,10 +70,8 @@ type MapExtractor[T comparable, U any] struct {
 func (x MapExtractor[K, V]) ByValue(condition func(V) bool) func(yield func(V) bool) {
 	return func(yield func(V) bool) {
 		for _, v := range x.m {
-			if condition(v) {
-				if !yield(v) {
-					break
-				}
+			if condition(v) && !yield(v) {
+				return
 			}
 		}
 	}
@@ -89,10 +81,8 @@ func (x MapExtractor[K, V]) ByValue(condition func(V) bool) func(yield func(V) b
 func (x MapExtractor[K, V]) ByKey(condition func(K) bool) func(yield func(V) bool) {
 	return func(yield func(V) bool) {
 		for i, v := range x.m {
-			if condition(i) {
-				if !yield(v) {
-					break
-				}
+			if condition(i) && !yield(v) {
+				return
 			}
 		}
 	}
@@ -102,10 +92,8 @@ func (x MapExtractor[K, V]) ByKey(condition func(K) bool) func(yield func(V) boo
 func (x MapExtractor[K, V]) ByKeyAndValue(condition func(K, V) bool) func(yield func(V) bool) {
 	return func(yield func(V) bool) {
 		for k, v := range x.m {
-			if condition(k, v) {
-				if !yield(v) {
-					break
-				}
+			if condition(k, v) && !yield(v) {
+				return
 			}
 		}
 	}
