@@ -19,9 +19,11 @@ go get github.com/miyamo2/xtract
 
 ### Setup `GOEXPERIMENT`
 
-If your Go project is Go 1.23 or higher, this section is not necessary.
-
-Also, if Go1.21 or lower, you will need to update to Go1.22.
+> [!IMPORTANT]
+> 
+> If your Go project is Go 1.23 or higher, this section is not necessary.
+> 
+> Also, if Go1.21 or lower, you will need to update to Go1.22.
 
 ```sh
 go env -w GOEXPERIMENT=rangefunc
