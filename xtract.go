@@ -1,5 +1,7 @@
 package xtract
 
+import "iter"
+
 // compatibility checks
 var (
 	_ Extractor[int, string] = (*SliceExtractor[string])(nil)
@@ -9,11 +11,11 @@ var (
 // Extractor provides features to extract values from a collection.
 type Extractor[K comparable, V any] interface {
 	// ByValue filters the values of the collection by their values.
-	ByValue(condition func(V) bool) func(yield func(V) bool)
+	ByValue(condition func(V) bool) iter.Seq[V]
 	// ByKey filters the values of the collection by their keys.
-	ByKey(condition func(K) bool) func(yield func(V) bool)
+	ByKey(condition func(K) bool) iter.Seq[V]
 	// ByKeyAndValue filters the values of the collection by their keys and values.
-	ByKeyAndValue(condition func(K, V) bool) func(yield func(V) bool)
+	ByKeyAndValue(condition func(K, V) bool) iter.Seq[V]
 }
 
 // SliceExtractor is implementation of Extractor for slice.
@@ -22,7 +24,7 @@ type SliceExtractor[T any] struct {
 }
 
 // ByValue See: Extractor.ByValue
-func (x *SliceExtractor[T]) ByValue(condition func(T) bool) func(yield func(T) bool) {
+func (x *SliceExtractor[T]) ByValue(condition func(T) bool) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		for _, v := range x.s {
 			if condition(v) && !yield(v) {
@@ -33,7 +35,7 @@ func (x *SliceExtractor[T]) ByValue(condition func(T) bool) func(yield func(T) b
 }
 
 // ByKey See: Extractor.ByKey
-func (x *SliceExtractor[T]) ByKey(condition func(int) bool) func(yield func(T) bool) {
+func (x *SliceExtractor[T]) ByKey(condition func(int) bool) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		for i, v := range x.s {
 			if condition(i) && !yield(v) {
@@ -44,7 +46,7 @@ func (x *SliceExtractor[T]) ByKey(condition func(int) bool) func(yield func(T) b
 }
 
 // ByKeyAndValue See: Extractor.ByKeyAndValue
-func (x *SliceExtractor[T]) ByKeyAndValue(condition func(int, T) bool) func(yield func(T) bool) {
+func (x *SliceExtractor[T]) ByKeyAndValue(condition func(int, T) bool) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		for i, v := range x.s {
 			if condition(i, v) && !yield(v) {
@@ -67,7 +69,7 @@ type MapExtractor[T comparable, U any] struct {
 }
 
 // ByValue See: Extractor.ByValue
-func (x MapExtractor[K, V]) ByValue(condition func(V) bool) func(yield func(V) bool) {
+func (x MapExtractor[K, V]) ByValue(condition func(V) bool) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		for _, v := range x.m {
 			if condition(v) && !yield(v) {
@@ -78,7 +80,7 @@ func (x MapExtractor[K, V]) ByValue(condition func(V) bool) func(yield func(V) b
 }
 
 // ByKey See: Extractor.ByKey
-func (x MapExtractor[K, V]) ByKey(condition func(K) bool) func(yield func(V) bool) {
+func (x MapExtractor[K, V]) ByKey(condition func(K) bool) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		for i, v := range x.m {
 			if condition(i) && !yield(v) {
@@ -89,7 +91,7 @@ func (x MapExtractor[K, V]) ByKey(condition func(K) bool) func(yield func(V) boo
 }
 
 // ByKeyAndValue See: Extractor.ByKeyAndValue
-func (x MapExtractor[K, V]) ByKeyAndValue(condition func(K, V) bool) func(yield func(V) bool) {
+func (x MapExtractor[K, V]) ByKeyAndValue(condition func(K, V) bool) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		for k, v := range x.m {
 			if condition(k, v) && !yield(v) {
