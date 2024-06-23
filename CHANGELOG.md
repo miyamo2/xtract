@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0 - 2024-06-23
+
+### Breaking Changes💥
+
+- `Extractor[T, U]` is now method-chain interface
+
 ## 0.1.1 - 2024-06-16
 
 ### Refactor♻️
