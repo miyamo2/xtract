@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1 - 2024-07-23
+
+### Refactor🔨
+
+- Generation of `iter.Seq` and `iter.Seq2` is now common as an internal function
+
+### Documentation📚
+
+- Added more example to GoDoc and README
+
 ## 0.2.0 - 2024-06-23
 
 ### Breaking Changes💥
