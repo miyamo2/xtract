@@ -28,51 +28,27 @@ type SliceExtractor[V any] struct {
 // ByValue See: Extractor.ByValue
 func (x *SliceExtractor[V]) ByValue(condition func(V) bool) Extractor[int, V] {
 	return &SliceExtractor[V]{
-		seq: func(yield func(int, V) bool) {
-			for i, v := range x.seq {
-				if condition(v) && !yield(i, v) {
-					return
-				}
-			}
-		},
+		seq: byValue(x.seq, condition),
 	}
 }
 
 // ByKey See: Extractor.ByKey
 func (x *SliceExtractor[V]) ByKey(condition func(int) bool) Extractor[int, V] {
 	return &SliceExtractor[V]{
-		seq: func(yield func(int, V) bool) {
-			for i, v := range x.seq {
-				if condition(i) && !yield(i, v) {
-					return
-				}
-			}
-		},
+		seq: byKey(x.seq, condition),
 	}
 }
 
 // ByKeyAndValue See: Extractor.ByKeyAndValue
 func (x *SliceExtractor[V]) ByKeyAndValue(condition func(int, V) bool) Extractor[int, V] {
 	return &SliceExtractor[V]{
-		seq: func(yield func(int, V) bool) {
-			for i, v := range x.seq {
-				if condition(i, v) && !yield(i, v) {
-					return
-				}
-			}
-		},
+		seq: byKeyAndValue(x.seq, condition),
 	}
 }
 
 // Values See: Extractor.Values
 func (x *SliceExtractor[V]) Values() iter.Seq[V] {
-	return func(yield func(V) bool) {
-		for _, v := range x.seq {
-			if !yield(v) {
-				return
-			}
-		}
-	}
+	return values(x.seq)
 }
 
 // FromSlice returns Extractor for a slice.
@@ -95,51 +71,27 @@ type MapExtractor[K comparable, V any] struct {
 // ByValue See: Extractor.ByValue
 func (x MapExtractor[K, V]) ByValue(condition func(V) bool) Extractor[K, V] {
 	return &MapExtractor[K, V]{
-		seq: func(yield func(K, V) bool) {
-			for k, v := range x.seq {
-				if condition(v) && !yield(k, v) {
-					return
-				}
-			}
-		},
+		seq: byValue(x.seq, condition),
 	}
 }
 
 // ByKey See: Extractor.ByKey
 func (x MapExtractor[K, V]) ByKey(condition func(K) bool) Extractor[K, V] {
 	return &MapExtractor[K, V]{
-		seq: func(yield func(K, V) bool) {
-			for k, v := range x.seq {
-				if condition(k) && !yield(k, v) {
-					return
-				}
-			}
-		},
+		seq: byKey(x.seq, condition),
 	}
 }
 
 // ByKeyAndValue See: Extractor.ByKeyAndValue
 func (x MapExtractor[K, V]) ByKeyAndValue(condition func(K, V) bool) Extractor[K, V] {
 	return &MapExtractor[K, V]{
-		seq: func(yield func(K, V) bool) {
-			for k, v := range x.seq {
-				if condition(k, v) && !yield(k, v) {
-					return
-				}
-			}
-		},
+		seq: byKeyAndValue(x.seq, condition),
 	}
 }
 
 // Values See: Extractor.Values
 func (x MapExtractor[K, V]) Values() iter.Seq[V] {
-	return func(yield func(V) bool) {
-		for _, v := range x.seq {
-			if !yield(v) {
-				return
-			}
-		}
-	}
+	return values(x.seq)
 }
 
 // FromMap returns Extractor for a map.
@@ -152,5 +104,49 @@ func FromMap[K comparable, V any](m map[K]V) Extractor[K, V] {
 				}
 			}
 		},
+	}
+}
+
+func byValue[K comparable, V any](seq iter.Seq2[K, V], condition func(V) bool) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		seq(func(k K, v V) bool {
+			if condition(v) && !yield(k, v) {
+				return false
+			}
+			return true
+		})
+	}
+}
+
+func byKey[K comparable, V any](seq iter.Seq2[K, V], condition func(K) bool) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		seq(func(k K, v V) bool {
+			if condition(k) && !yield(k, v) {
+				return false
+			}
+			return true
+		})
+	}
+}
+
+func byKeyAndValue[K comparable, V any](seq iter.Seq2[K, V], condition func(K, V) bool) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		seq(func(k K, v V) bool {
+			if condition(k, v) && !yield(k, v) {
+				return false
+			}
+			return true
+		})
+	}
+}
+
+func values[K comparable, V any](seq iter.Seq2[K, V]) iter.Seq[V] {
+	return func(yield func(V) bool) {
+		seq(func(_ K, v V) bool {
+			if !yield(v) {
+				return false
+			}
+			return true
+		})
 	}
 }
