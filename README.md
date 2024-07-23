@@ -31,6 +31,54 @@ go env -w GOEXPERIMENT=rangefunc
 
 ### Usage
 
+```go
+s := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 100, 101}
+even := xtract.FromSlice(s).ByValue(func(i int) bool { return i%2 == 0 })
+odd := xtract.FromSlice(s).ByValue(func(i int) bool { return i%2 != 0 })
+
+fmt.Println("---even---")
+for v := range even.Values() {
+fmt.Println(v)
+}
+
+fmt.Println("---odd---")
+for v := range odd.Values() {
+fmt.Println(v)
+}
+
+evenAndTwoDigits := even.ByValue(func(i int) bool { return i > 9 && i < 100 })
+fmt.Println("---even and two digits---")
+for v := range evenAndTwoDigits.Values() {
+fmt.Println(v)
+}
+
+oddAndTwoDigits := odd.ByValue(func(i int) bool { return i > 9 && i < 100 })
+fmt.Println("---odd and two digits---")
+for v := range oddAndTwoDigits.Values() {
+fmt.Println(v)
+}
+// Output: ---even---
+//0
+//2
+//4
+//6
+//8
+//10
+//100
+//---odd---
+//1
+//3
+//5
+//7
+//9
+//11
+//101
+//---even and two digits---
+//10
+//---odd and two digits---
+//11
+```
+
 #### With `SliceExtractor.ByValue`
 
 ```go
