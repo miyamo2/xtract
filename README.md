@@ -39,24 +39,24 @@ odd := xt.ByValue(func(i int) bool { return i%2 != 0 })
 
 fmt.Println("---even---")
 for v := range even.Values() {
-fmt.Println(v)
+    fmt.Println(v)
 }
 
 fmt.Println("---odd---")
 for v := range odd.Values() {
-fmt.Println(v)
+    fmt.Println(v)
 }
 
 evenAndTwoDigits := even.ByValue(func(i int) bool { return i > 9 && i < 100 })
 fmt.Println("---even and two digits---")
 for v := range evenAndTwoDigits.Values() {
-fmt.Println(v)
+    fmt.Println(v)
 }
 
 oddAndTwoDigits := odd.ByValue(func(i int) bool { return i > 9 && i < 100 })
 fmt.Println("---odd and two digits---")
 for v := range oddAndTwoDigits.Values() {
-fmt.Println(v)
+    fmt.Println(v)
 }
 // Output: ---even---
 //0
