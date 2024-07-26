@@ -1,6 +1,8 @@
 package xtract
 
-import "iter"
+import (
+	"iter"
+)
 
 // compatibility checks
 var (
@@ -18,6 +20,10 @@ type Extractor[K comparable, V any] interface {
 	ByKeyAndValue(condition func(K, V) bool) Extractor[K, V]
 	// Values returns a sequence of values.
 	Values() iter.Seq[V]
+	// Limit limits the number of values to the specified number.
+	Limit(n int) Extractor[K, V]
+	// Offset skips the specified number of values.
+	Offset(n int) Extractor[K, V]
 }
 
 // SliceExtractor is implementation of Extractor for slice.
@@ -43,6 +49,20 @@ func (x *SliceExtractor[V]) ByKey(condition func(int) bool) Extractor[int, V] {
 func (x *SliceExtractor[V]) ByKeyAndValue(condition func(int, V) bool) Extractor[int, V] {
 	return &SliceExtractor[V]{
 		seq: byKeyAndValue(x.seq, condition),
+	}
+}
+
+// Limit See: Extractor.Limit
+func (x *SliceExtractor[V]) Limit(n int) Extractor[int, V] {
+	return &SliceExtractor[V]{
+		seq: limit(x.seq, n),
+	}
+}
+
+// Offset See: Extractor.Offset
+func (x *SliceExtractor[V]) Offset(n int) Extractor[int, V] {
+	return &SliceExtractor[V]{
+		seq: offset(x.seq, n),
 	}
 }
 
@@ -86,6 +106,24 @@ func (x MapExtractor[K, V]) ByKey(condition func(K) bool) Extractor[K, V] {
 func (x MapExtractor[K, V]) ByKeyAndValue(condition func(K, V) bool) Extractor[K, V] {
 	return &MapExtractor[K, V]{
 		seq: byKeyAndValue(x.seq, condition),
+	}
+}
+
+// Limit See: Extractor.Limit
+//
+// NOTE: The order of the values is not guaranteed.
+func (x MapExtractor[K, V]) Limit(n int) Extractor[K, V] {
+	return &MapExtractor[K, V]{
+		seq: limit(x.seq, n),
+	}
+}
+
+// Offset See: Extractor.Offset
+//
+// NOTE: The order of the values is not guaranteed.
+func (x MapExtractor[K, V]) Offset(n int) Extractor[K, V] {
+	return &MapExtractor[K, V]{
+		seq: offset(x.seq, n),
 	}
 }
 
@@ -137,6 +175,38 @@ func byKeyAndValue[K comparable, V any](seq iter.Seq2[K, V], condition func(K, V
 			}
 			return true
 		})
+	}
+}
+
+func limit[K comparable, V any](seq iter.Seq2[K, V], n int) iter.Seq2[K, V] {
+	if n < 1 {
+		return func(yield func(K, V) bool) {
+			return
+		}
+	}
+	return func(yield func(K, V) bool) {
+		i := 1
+		for k, v := range seq {
+			if !yield(k, v) || i == n {
+				return
+			}
+			i++
+		}
+	}
+}
+
+func offset[K comparable, V any](seq iter.Seq2[K, V], n int) iter.Seq2[K, V] {
+	if n < 1 {
+		return seq
+	}
+	return func(yield func(K, V) bool) {
+		i := 1
+		for k, v := range seq {
+			if i > n && !yield(k, v) {
+				return
+			}
+			i++
+		}
 	}
 }
 

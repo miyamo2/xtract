@@ -83,6 +83,25 @@ func ExampleSliceExtractor_ByKeyAndValue() {
 	// Output: range over func
 }
 
+func ExampleSliceExtractor_Limit() {
+	s := []string{"gopher", "iterator", "range over func"}
+	xt := xtract.FromSlice(s).Limit(1)
+	for v := range xt.Values() {
+		fmt.Println(v)
+	}
+	// Output: gopher
+}
+
+func ExampleSliceExtractor_Offset() {
+	s := []string{"gopher", "iterator", "range over func"}
+	xt := xtract.FromSlice(s).Offset(1)
+	for v := range xt.Values() {
+		fmt.Println(v)
+	}
+	// Output: iterator
+	//range over func
+}
+
 func ExampleMapExtractor_ByValue() {
 	m := map[string]string{"language": "gopher", "design pattern": "iterator", "implementation": "range over func"}
 	xt := xtract.FromMap(m).ByValue(func(v string) bool { return len(v) < 8 })
@@ -108,4 +127,28 @@ func ExampleMapExtractor_ByKeyAndValue() {
 		fmt.Println(v)
 	}
 	// Output: gopher
+}
+
+func ExampleMapExtractor_Limit() {
+	m := map[string]string{"language": "gopher", "design pattern": "iterator", "implementation": "range over func"}
+	xt := xtract.FromMap(m).Limit(1)
+
+	values := make([]string, 0, 1)
+	for v := range xt.Values() {
+		values = append(values, v)
+	}
+	fmt.Println(len(values))
+	// Output: 1
+}
+
+func ExampleMapExtractor_Offset() {
+	m := map[string]string{"language": "gopher", "design pattern": "iterator", "implementation": "range over func"}
+	xt := xtract.FromMap(m).Offset(1)
+
+	values := make([]string, 0, 1)
+	for v := range xt.Values() {
+		values = append(values, v)
+	}
+	fmt.Println(len(values))
+	// Output: 2
 }
