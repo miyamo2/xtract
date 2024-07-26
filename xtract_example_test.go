@@ -8,8 +8,9 @@ import (
 
 func Example() {
 	s := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 100, 101}
-	even := xtract.FromSlice(s).ByValue(func(i int) bool { return i%2 == 0 })
-	odd := xtract.FromSlice(s).ByValue(func(i int) bool { return i%2 != 0 })
+	xt := xtract.FromSlice(s)
+	even := xt.ByValue(func(i int) bool { return i%2 == 0 })
+	odd := xt.ByValue(func(i int) bool { return i%2 != 0 })
 
 	fmt.Println("---even---")
 	for v := range even.Values() {

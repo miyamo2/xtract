@@ -7,7 +7,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/miyamo2/xtract)](https://goreportcard.com/report/github.com/miyamo2/xtract)
 [![GitHub License](https://img.shields.io/github/license/miyamo2/xtract?&color=blue)](https://img.shields.io/github/license/miyamo2/xtract?&color=blue)
 
-Extract from collection and build iterators.
+Extract from collection and build iterator.
 
 ## Quick Start
 
@@ -23,7 +23,7 @@ go get github.com/miyamo2/xtract
 > 
 > If your Go project is Go 1.23 or higher, this section is not necessary.
 > 
-> Also, if Go1.21 or lower, you will need to update to Go1.22.
+> Also, if Go 1.21 or lower, you will need to update to Go 1.22.
 
 ```sh
 go env -w GOEXPERIMENT=rangefunc
@@ -33,8 +33,9 @@ go env -w GOEXPERIMENT=rangefunc
 
 ```go
 s := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 100, 101}
-even := xtract.FromSlice(s).ByValue(func(i int) bool { return i%2 == 0 })
-odd := xtract.FromSlice(s).ByValue(func(i int) bool { return i%2 != 0 })
+xt := xtract.FromSlice(s)
+even := xt.ByValue(func(i int) bool { return i%2 == 0 })
+odd := xt.ByValue(func(i int) bool { return i%2 != 0 })
 
 fmt.Println("---even---")
 for v := range even.Values() {
