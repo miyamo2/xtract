@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.0 - 2024-07-26
+
+### ✨New Features
+
+- Added `Limit` to limit the number of values in a sequence to a specified number
+- Added `Offset` to skip a specified number of values in a sequence
+
+### 📚Documentation
+
+- Few Fixes in GoDoc and README
+
 ## 0.2.1 - 2024-07-23
 
 ### Refactor🔨
