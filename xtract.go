@@ -184,14 +184,15 @@ func limit[K comparable, V any](seq iter.Seq2[K, V], n int) iter.Seq2[K, V] {
 			return
 		}
 	}
+	i := 1
 	return func(yield func(K, V) bool) {
-		i := 1
-		for k, v := range seq {
+		seq(func(k K, v V) bool {
 			if !yield(k, v) || i == n {
-				return
+				return false
 			}
 			i++
-		}
+			return true
+		})
 	}
 }
 
@@ -199,14 +200,15 @@ func offset[K comparable, V any](seq iter.Seq2[K, V], n int) iter.Seq2[K, V] {
 	if n < 1 {
 		return seq
 	}
+	i := 1
 	return func(yield func(K, V) bool) {
-		i := 1
-		for k, v := range seq {
+		seq(func(k K, v V) bool {
 			if i > n && !yield(k, v) {
-				return
+				return false
 			}
 			i++
-		}
+			return true
+		})
 	}
 }
 
