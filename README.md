@@ -115,6 +115,29 @@ for v := range xt.Values()
 // Output: range over func
 ```
 
+#### With `SliceExtractor.Limit`
+
+```go
+s := []string{"go", "iterator", "range over func"}
+xt := xtract.FromSlice(s).Limit(1)
+for v := range xt.Values() {
+    fmt.Println(v)
+}
+// Output: go
+```
+
+#### With `SliceExtractor.Offset`
+
+```go
+s := []string{"go", "iterator", "range over func"}
+xt := xtract.FromSlice(s).Offset(1)
+for v := range xt.Values() {
+    fmt.Println(v)
+}
+// Output: iterator
+//range over func
+```
+
 #### With `MapExtractor.ByValue`
 
 ```go
@@ -146,6 +169,34 @@ for v := range xt.Values() {
     fmt.Println(v)
 }
 // Output: go
+```
+
+#### With `MapExtractor.Limit`
+
+```go
+m := map[string]string{"language": "go", "design pattern": "iterator", "implementation": "range over func"}
+xt := xtract.FromMap(m).Limit(1)
+
+values := make([]string, 0, 1)
+for v := range xt.Values() {
+    values = append(values, v)
+}
+fmt.Println(len(values))
+// Output: 1
+```
+
+#### With `MapExtractor.Offset`
+
+```go
+m := map[string]string{"language": "go", "design pattern": "iterator", "implementation": "range over func"}
+xt := xtract.FromMap(m).Offset(1)
+
+values := make([]string, 0, 1)
+for v := range xt.Values() {
+    values = append(values, v)
+}
+fmt.Println(len(values))
+// Output: 2
 ```
 
 ## Contributing
