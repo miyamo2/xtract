@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0 - 2024-07-27
+
+### ✨New Features
+
+- Added `KeyAndValues`, the method to extract both keys and values in a sequence.
+
 ## 0.3.0 - 2024-07-26
 
 ### ✨New Features
