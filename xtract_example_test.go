@@ -56,17 +56,17 @@ func Example() {
 }
 
 func ExampleSliceExtractor_ByValue() {
-	s := []string{"gopher", "iterator", "range over func"}
+	s := []string{"go", "iterator", "range over func"}
 	xt := xtract.FromSlice(s).ByValue(func(v string) bool { return len(v) < 9 })
 	for v := range xt.Values() {
 		fmt.Println(v)
 	}
-	// Output: gopher
+	// Output: go
 	//iterator
 }
 
 func ExampleSliceExtractor_ByKey() {
-	s := []string{"gopher", "iterator", "range over func"}
+	s := []string{"go", "iterator", "range over func"}
 	xt := xtract.FromSlice(s).ByKey(func(i int) bool { return i > 0 })
 	for v := range xt.Values() {
 		fmt.Println(v)
@@ -76,7 +76,7 @@ func ExampleSliceExtractor_ByKey() {
 }
 
 func ExampleSliceExtractor_ByKeyAndValue() {
-	s := []string{"gopher", "iterator", "range over func"}
+	s := []string{"go", "iterator", "range over func"}
 	xt := xtract.FromSlice(s).ByKeyAndValue(func(i int, v string) bool { return i > 1 && len(v) > 6 })
 	for v := range xt.Values() {
 		fmt.Println(v)
@@ -85,16 +85,16 @@ func ExampleSliceExtractor_ByKeyAndValue() {
 }
 
 func ExampleSliceExtractor_Limit() {
-	s := []string{"gopher", "iterator", "range over func"}
+	s := []string{"go", "iterator", "range over func"}
 	xt := xtract.FromSlice(s).Limit(1)
 	for v := range xt.Values() {
 		fmt.Println(v)
 	}
-	// Output: gopher
+	// Output: go
 }
 
 func ExampleSliceExtractor_Offset() {
-	s := []string{"gopher", "iterator", "range over func"}
+	s := []string{"go", "iterator", "range over func"}
 	xt := xtract.FromSlice(s).Offset(1)
 	for v := range xt.Values() {
 		fmt.Println(v)
@@ -103,17 +103,28 @@ func ExampleSliceExtractor_Offset() {
 	//range over func
 }
 
+func ExampleSliceExtractor_KeyAndValues() {
+	s := []string{"go", "iterator", "range over func"}
+	xt := xtract.FromSlice(s)
+	for k, v := range xt.KeyAndValues() {
+		fmt.Printf("%d: %s\n", k, v)
+	}
+	// Output: 0: go
+	//1: iterator
+	//2: range over func
+}
+
 func ExampleMapExtractor_ByValue() {
-	m := map[string]string{"language": "gopher", "design pattern": "iterator", "implementation": "range over func"}
+	m := map[string]string{"language": "go", "design pattern": "iterator", "implementation": "range over func"}
 	xt := xtract.FromMap(m).ByValue(func(v string) bool { return len(v) < 8 })
 	for v := range xt.Values() {
 		fmt.Println(v)
 	}
-	// Output: gopher
+	// Output: go
 }
 
 func ExampleMapExtractor_ByKey() {
-	m := map[string]string{"language": "gopher", "design pattern": "iterator", "implementation": "range over func"}
+	m := map[string]string{"language": "go", "design pattern": "iterator", "implementation": "range over func"}
 	xt := xtract.FromMap(m).ByKey(func(k string) bool { return strings.Contains(k, " ") })
 	for v := range xt.Values() {
 		fmt.Println(v)
@@ -122,16 +133,16 @@ func ExampleMapExtractor_ByKey() {
 }
 
 func ExampleMapExtractor_ByKeyAndValue() {
-	m := map[string]string{"language": "gopher", "design pattern": "iterator", "implementation": "range over func"}
+	m := map[string]string{"language": "go", "design pattern": "iterator", "implementation": "range over func"}
 	xt := xtract.FromMap(m).ByKeyAndValue(func(k, v string) bool { return strings.Contains(k, "e") && len(v) < 8 })
 	for v := range xt.Values() {
 		fmt.Println(v)
 	}
-	// Output: gopher
+	// Output: go
 }
 
 func ExampleMapExtractor_Limit() {
-	m := map[string]string{"language": "gopher", "design pattern": "iterator", "implementation": "range over func"}
+	m := map[string]string{"language": "go", "design pattern": "iterator", "implementation": "range over func"}
 	xt := xtract.FromMap(m).Limit(1)
 
 	values := make([]string, 0, 1)
@@ -143,7 +154,7 @@ func ExampleMapExtractor_Limit() {
 }
 
 func ExampleMapExtractor_Offset() {
-	m := map[string]string{"language": "gopher", "design pattern": "iterator", "implementation": "range over func"}
+	m := map[string]string{"language": "go", "design pattern": "iterator", "implementation": "range over func"}
 	xt := xtract.FromMap(m).Offset(1)
 
 	values := make([]string, 0, 1)
@@ -152,4 +163,14 @@ func ExampleMapExtractor_Offset() {
 	}
 	fmt.Println(len(values))
 	// Output: 2
+}
+
+func ExampleMapExtractor_KeyAndValues() {
+	m := map[string]string{"language": "go", "design pattern": "iterator", "implementation": "range over func"}
+	xt := xtract.FromMap(m).ByKey(func(k string) bool { return strings.Contains(k, " ") })
+
+	for k, v := range xt.KeyAndValues() {
+		fmt.Printf("%s: %s\n", k, v)
+	}
+	// Output: design pattern: iterator
 }

@@ -18,12 +18,14 @@ type Extractor[K comparable, V any] interface {
 	ByKey(condition func(K) bool) Extractor[K, V]
 	// ByKeyAndValue filters the values of the collection by their keys and values.
 	ByKeyAndValue(condition func(K, V) bool) Extractor[K, V]
-	// Values returns a sequence of values.
-	Values() iter.Seq[V]
 	// Limit limits the number of values to the specified number.
 	Limit(n int) Extractor[K, V]
 	// Offset skips the specified number of values.
 	Offset(n int) Extractor[K, V]
+	// Values returns a sequence of values.
+	Values() iter.Seq[V]
+	// KeyAndValues returns a sequence of key-value pairs.
+	KeyAndValues() iter.Seq2[K, V]
 }
 
 // SliceExtractor is implementation of Extractor for slice.
@@ -69,6 +71,11 @@ func (x *SliceExtractor[V]) Offset(n int) Extractor[int, V] {
 // Values See: Extractor.Values
 func (x *SliceExtractor[V]) Values() iter.Seq[V] {
 	return values(x.seq)
+}
+
+// KeyAndValues See: Extractor.KeyAndValues
+func (x *SliceExtractor[V]) KeyAndValues() iter.Seq2[int, V] {
+	return keyAndValues(x.seq)
 }
 
 // FromSlice returns Extractor for a slice.
@@ -130,6 +137,11 @@ func (x MapExtractor[K, V]) Offset(n int) Extractor[K, V] {
 // Values See: Extractor.Values
 func (x MapExtractor[K, V]) Values() iter.Seq[V] {
 	return values(x.seq)
+}
+
+// KeyAndValues See: Extractor.KeyAndValues
+func (x MapExtractor[K, V]) KeyAndValues() iter.Seq2[K, V] {
+	return keyAndValues(x.seq)
 }
 
 // FromMap returns Extractor for a map.
@@ -216,6 +228,17 @@ func values[K comparable, V any](seq iter.Seq2[K, V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		seq(func(_ K, v V) bool {
 			if !yield(v) {
+				return false
+			}
+			return true
+		})
+	}
+}
+
+func keyAndValues[K comparable, V any](seq iter.Seq2[K, V]) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		seq(func(k K, v V) bool {
+			if !yield(k, v) {
 				return false
 			}
 			return true
